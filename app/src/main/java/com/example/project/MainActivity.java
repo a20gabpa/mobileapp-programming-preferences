@@ -17,18 +17,21 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor myPreferenceEditor;
     /* ===================== */
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get my preference
-        myPreferenceRef = getPreferences(MODE_PRIVATE);
-        myPreferenceEditor = myPreferenceRef.edit();
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Get preference
+        myPreferenceRef = getSharedPreferences("SharedPreferencesName", MODE_PRIVATE);
+        myPreferenceEditor = myPreferenceRef.edit();
+
+        // Store initial preference
+        myPreferenceEditor.putString("MyAppPreferenceString", "An preference with only one value at start");
+        myPreferenceEditor.apply();
 
         // Read from preferences
         TextView prefTextView = findViewById(R.id.prefText);
@@ -43,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences myPreferenceRef = getSharedPreferences("SharedPreferencesName", MODE_PRIVATE);
+        SharedPreferences.Editor myPreferenceEditor = myPreferenceRef.edit();
+
+        // Read from preferences
+        TextView prefTextView = findViewById(R.id.prefText);
+        prefTextView.setText(myPreferenceRef.getString("MyAppPreferenceString", "No preference found..."));
     }
 }
